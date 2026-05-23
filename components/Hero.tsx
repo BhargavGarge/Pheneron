@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { TextScramble } from "@/components/ui/text-scramble";
 
 const VIDEO_SRC =
@@ -28,7 +28,7 @@ function HeroNavbar() {
         <div className="hidden items-center gap-7 md:flex" />
         <HeroButton />
       </div>
-      <div className="mt-[3px] h-px w-full bg-gradient-to-r from-transparent via-foreground/20 to-transparent" />
+      <div className="mt-0.75 h-px w-full bg-linear-to-r from-transparent via-foreground/20 to-transparent" />
     </div>
   );
 }
@@ -73,7 +73,7 @@ function InlinePendulum() {
       transition={{ repeat: Infinity, duration: 3, ease: [0.6, 0, 0.4, 1] }}
       className="flex flex-col items-center"
     >
-      <div className="w-[1px] h-28 sm:h-36 bg-white" />
+      <div className="w-px h-28 sm:h-36 bg-white" />
       <motion.div
         className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-white"
         style={{ boxShadow: "inset 0 0 40px white, 0 0 15px white" }}
@@ -168,7 +168,9 @@ export default function Hero() {
 
   return (
     <section className="relative flex min-h-screen flex-col overflow-visible bg-background text-foreground">
-      {/* Video background — starts invisible, fades in on canplay */}
+      <div className="absolute inset-0 overflow-hidden bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.08),transparent_42%),linear-gradient(180deg,rgba(10,10,20,1)_0%,rgba(6,6,12,1)_58%,rgba(5,5,10,1)_100%)]" />
+
+      {/* Video background — opacity-0 hides it pre-JS; fadeTo owns all opacity from there */}
       <div className="absolute inset-0 overflow-hidden">
         <video
           ref={videoRef}
@@ -176,72 +178,86 @@ export default function Hero() {
           muted
           loop={false}
           playsInline
-          className="absolute inset-0 h-full w-full object-cover"
+          preload="auto"
+          className="absolute inset-0 h-full w-full object-cover opacity-0"
+          style={{ filter: "brightness(1.35)" }}
         />
       </div>
+
+      <div className="pointer-events-none absolute inset-0 bg-black/25" />
 
       <div className="relative z-10 flex min-h-screen flex-col">
         <HeroNavbar />
 
         <div className="relative flex flex-1 items-center justify-center overflow-visible px-6">
-          {/* Blur backdrop — only visible once video is ready */}
-          <AnimatePresence>
-            {videoReady && (
-              <motion.div
-                className="pointer-events-none absolute left-1/2 top-1/2 h-[527px] w-[984px] -translate-x-1/2 -translate-y-1/2 bg-gray-950 opacity-90 blur-[82px]"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 0.9 }}
-                transition={{ duration: 1 }}
-              />
-            )}
-          </AnimatePresence>
+          <motion.div
+            className="pointer-events-none absolute left-1/2 top-1/2 h-131.75 w-246 -translate-x-1/2 -translate-y-1/2 bg-gray-950 blur-[82px]"
+            initial={{ opacity: 0.15 }}
+            animate={{ opacity: videoReady ? 0.9 : 0.35 }}
+            transition={{ duration: 0.9, ease: "easeOut" }}
+          />
 
           <div className="relative z-10 flex flex-col items-center text-center gap-6">
-            {/* Pendulum OR hero title — swaps on video ready */}
-            <AnimatePresence mode="wait">
-              {!videoReady ? (
+            {/* Pendulum — loading indicator, fades out once hero is ready */}
+            <AnimatePresence>
+              {!videoReady && (
                 <motion.div
                   key="pendulum"
-                  className="flex flex-col items-center"
-                  initial={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 1.2, ease: "easeInOut" }}
+                  className="pointer-events-none"
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.85, transition: { duration: 0.45, ease: "easeIn" } }}
+                  transition={{ duration: 0.9, ease: "easeOut" }}
                 >
                   <InlinePendulum />
                 </motion.div>
-              ) : (
-                <TextScramble
-                  key="title"
-                  as="h1"
-                  trigger={videoReady}
-                  speed={0.18}
-                  duration={4}
-                  characterSet="ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                  className="text-[clamp(3rem,15vw,220px)] font-normal leading-[1.02] tracking-[-0.024em] text-foreground"
-                  style={{ fontFamily: '"General Sans", sans-serif' }}
-                  initial={{ opacity: 0, y: 16 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 1.6, ease: [0.16, 1, 0.3, 1] }}
-                >
-                  PHENERON
-                </TextScramble>
               )}
             </AnimatePresence>
 
-            {/* Subtext — always visible */}
-            <p className="max-w-md text-lg leading-8 text-hero-sub/80">
-              Your business doesn't need more employees.
-              <br />
-              It needs better systems.
-            </p>
-
-            {/* Schedule button — fades in after video is ready */}
+            {/* PHENERON title — mounts and scrambles in only after video is ready */}
             <AnimatePresence>
               {videoReady && (
                 <motion.div
+                  key="pheneron-title"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
+                >
+                  <TextScramble
+                    as="h1"
+                    trigger={videoReady}
+                    speed={0.18}
+                    duration={4}
+                    characterSet="ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                    className="text-[clamp(3rem,15vw,220px)] font-normal leading-[1.02] tracking-[-0.024em] text-foreground"
+                    style={{ fontFamily: '"General Sans", sans-serif' }}
+                  >
+                    PHENERON
+                  </TextScramble>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Tagline — visible during loading so the user knows what they're waiting for */}
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.8, delay: 0.5 }}
+              className="max-w-md text-lg leading-8 text-hero-sub/80"
+            >
+              Your business doesn't need more employees.
+              <br />
+              It needs better systems.
+            </motion.p>
+
+            {/* CTA button — appears after video ready */}
+            <AnimatePresence>
+              {videoReady && (
+                <motion.div
+                  key="cta-button"
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 1.2, ease: "easeOut", delay: 0.8 }}
+                  transition={{ duration: 1.2, ease: "easeOut", delay: 0.5 }}
                 >
                   <HeroButton>
                     <span className="inline-block px-7.25 py-6 text-base font-medium">
@@ -254,13 +270,14 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* Logo marquee — fades in after video is ready */}
+        {/* Logo marquee — appears after video ready */}
         <AnimatePresence>
           {videoReady && (
             <motion.div
+              key="logo-marquee"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 1.2, ease: "easeOut", delay: 1.2 }}
+              transition={{ duration: 1.2, ease: "easeOut", delay: 0.9 }}
             >
               <LogoMarquee />
             </motion.div>

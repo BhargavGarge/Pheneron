@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { PheneronWorkflowBlock } from "@/components/ui/n8n-workflow-block";
+import { PhenersonWorkflowBlock } from "@/components/ui/phenerson-workflow-block";
 
 export default function Process() {
   return (
@@ -39,7 +39,7 @@ export default function Process() {
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <PheneronWorkflowBlock />
+          <PhenersonWorkflowBlock />
         </motion.div>
       </div>
     </section>

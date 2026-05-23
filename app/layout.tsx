@@ -69,7 +69,10 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="bg-[#080808] text-white overflow-x-hidden">
+      <body
+        className="bg-[#080808] text-white overflow-x-hidden"
+        suppressHydrationWarning
+      >
         {children}
       </body>
     </html>
