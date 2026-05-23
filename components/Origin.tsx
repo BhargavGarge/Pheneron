@@ -111,7 +111,7 @@ export default function Origin() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.3 }}
-              className="rounded-2xl border border-white/10 bg-[#0e0e0e] p-7 card-glow relative overflow-hidden"
+              className="rounded-2xl border border-white/10 bg-[#0e0e0e] p-5 sm:p-7 card-glow relative overflow-hidden"
             >
               {/* Decorative quote mark */}
               <span

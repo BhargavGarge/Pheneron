@@ -180,7 +180,7 @@ export default function Hero() {
           playsInline
           preload="auto"
           className="absolute inset-0 h-full w-full object-cover opacity-0"
-          style={{ filter: "brightness(1.35)" }}
+          style={{ filter: "brightness(2.5)" }}
         />
       </div>
 
@@ -206,7 +206,11 @@ export default function Hero() {
                   className="pointer-events-none"
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.85, transition: { duration: 0.45, ease: "easeIn" } }}
+                  exit={{
+                    opacity: 0,
+                    scale: 0.85,
+                    transition: { duration: 0.45, ease: "easeIn" },
+                  }}
                   transition={{ duration: 0.9, ease: "easeOut" }}
                 >
                   <InlinePendulum />
