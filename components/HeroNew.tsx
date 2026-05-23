@@ -37,7 +37,7 @@ const fadeDown = {
     transition: {
       delay: 0.25 + i * 0.08,
       duration: 0.55,
-      ease: [0.22, 1, 0.36, 1],
+      ease: "easeInOut" as const,
     },
   }),
 };
@@ -50,7 +50,7 @@ const fadeUp = {
     transition: {
       delay: 0.15 + i * 0.11,
       duration: 0.65,
-      ease: [0.22, 1, 0.36, 1],
+      ease: "easeInOut" as const,
     },
   }),
 };
@@ -528,7 +528,12 @@ export default function HeroNew() {
                     transition={{
                       delay: 0.35 + i * 0.13,
                       duration: 0.72,
-                      ease: [0.22, 1, 0.36, 1],
+                      ease: [0.22, 1, 0.36, 1] as [
+                        number,
+                        number,
+                        number,
+                        number,
+                      ],
                     }}
                     className="font-semibold uppercase text-right text-black"
                     style={{
